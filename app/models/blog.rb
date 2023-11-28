@@ -10,7 +10,9 @@ class Blog < ApplicationRecord
   scope :published, -> { where('secret = FALSE') }
 
   scope :search, lambda { |term|
-    where("title LIKE '%#{term}%' OR content LIKE '%#{term}%'")
+    # Sanitizes a string so that it is safe to use within an SQL LIKE statement. This method uses escape_character to escape all occurrences of itself, “_” and “%”.
+    term = "%#{ActiveRecord::Base.sanitize_sql_like(term.to_s)}%"
+    where("title LIKE ? OR content LIKE ?", term, term)
   }
 
   scope :default_order, -> { order(id: :desc) }
