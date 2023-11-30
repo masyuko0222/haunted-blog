@@ -4,6 +4,7 @@ class BlogsController < ApplicationController
   skip_before_action :authenticate_user!, only: %i[index show]
 
   before_action :set_blog, only: %i[edit update destroy]
+  after_action :raises_exception_if_unauthorized_access, only: %i[show]
 
   def index
     @blogs = Blog.search(params[:term]).published.default_order
@@ -51,5 +52,11 @@ class BlogsController < ApplicationController
 
   def blog_params
     params.require(:blog).permit(:title, :content, :secret, :random_eyecatch)
+  end
+
+  def raises_exception_if_unauthorized_access
+    unless @blog.published? || @blog.owned_by?(current_user)
+      raise ActiveRecord::RecordNotFound
+    end
   end
 end
