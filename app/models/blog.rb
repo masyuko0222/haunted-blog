@@ -13,7 +13,7 @@ class Blog < ApplicationRecord
   scope :search, lambda { |term|
     # Sanitizes a string so that it is safe to use within an SQL LIKE statement.
     term = "%#{ActiveRecord::Base.sanitize_sql_like(term.to_s)}%"
-    where("title LIKE ? OR content LIKE ?", term, term)
+    where('title LIKE ? OR content LIKE ?', term, term)
   }
 
   scope :default_order, -> { order(id: :desc) }
@@ -23,7 +23,7 @@ class Blog < ApplicationRecord
   end
 
   def published?
-    !(secret?)
+    !secret?
   end
 
   private

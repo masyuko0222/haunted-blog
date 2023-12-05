@@ -55,8 +55,8 @@ class BlogsController < ApplicationController
   end
 
   def raises_exception_if_unauthorized_access
-    unless @blog.published? || @blog.owned_by?(current_user)
-      raise ActiveRecord::RecordNotFound
-    end
+    return if @blog.published? || @blog.owned_by?(current_user)
+
+    raise ActiveRecord::RecordNotFound
   end
 end
