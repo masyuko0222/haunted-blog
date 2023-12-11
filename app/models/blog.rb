@@ -6,7 +6,7 @@ class Blog < ApplicationRecord
   has_many :liking_users, class_name: 'User', source: :user, through: :likings
 
   validates :title, :content, presence: true
-  before_save :set_random_eyecatch_false_unless_premium_user
+  before_save :deny_premium_service_to_non_payers
 
   scope :published, -> { where('secret = FALSE') }
 
@@ -28,7 +28,7 @@ class Blog < ApplicationRecord
 
   private
 
-  def set_random_eyecatch_false_unless_premium_user
+  def deny_premium_service_to_non_payers
     self.random_eyecatch = false unless user.premium?
   end
 end
